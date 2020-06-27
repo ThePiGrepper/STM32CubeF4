@@ -75,46 +75,30 @@ int main(void)
   SystemClock_Config();
   
   /* -1- Enable GPIOG, GPIOC and GPIOI Clock (to be able to program the configuration registers) */
-  __HAL_RCC_GPIOG_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOI_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /* -2- Configure PG.6, PG.8, PI.9 and PC.7 IOs in output push-pull mode to
          drive external LEDs */
-  GPIO_InitStruct.Pin = (GPIO_PIN_6 | GPIO_PIN_8);
+  GPIO_InitStruct.Pin = (GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
   
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
   
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
-  
-  HAL_GPIO_Init(GPIOI, &GPIO_InitStruct); 
-  
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FAST;
-  
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct); 
-
   /* -3- Toggle PG.6, PG.8, PI.9 and PC.7 IOs in an infinite loop */  
   while (1)
   {
-    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_6);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_12);
     /* Insert delay 100 ms */
     HAL_Delay(100);
-    HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_8);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
     /* Insert delay 100 ms */
     HAL_Delay(100);
-    HAL_GPIO_TogglePin(GPIOI, GPIO_PIN_9);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_14);
     /* Insert delay 100 ms */
     HAL_Delay(100);
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+    HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
     /* Insert delay 100 ms */
     HAL_Delay(100);
   }
