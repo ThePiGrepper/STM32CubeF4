@@ -1,0 +1,108 @@
+#project specific variables
+#external libraries
+stlib = ../../../../../../../
+project_name = CDC_Standalone
+
+#ninja make configuration
+builddir = ./obj
+tool = arm-none-eabi-gcc
+cflags = -mcpu=cortex-m3 -mlittle-endian -mthumb
+deflst = -DUSE_HAL_DRIVER -DSTM32F407xx -DUSE_STM324xG_EVAL -DUSE_USB_FS
+incdir =  -I../../Inc $
+          -I$stlib/Drivers/CMSIS/Device/ST/STM32F4xx/Include $
+          -I$stlib/Drivers/STM32F4xx_HAL_Driver/Inc $
+          -I$stlib/Drivers/BSP/STM324xG_EVAL $
+          -I$stlib/Middlewares/ST/STM32_USB_Device_Library/Core/Inc $
+          -I$stlib/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc $
+          -I$stlib/Drivers/CMSIS/Include $
+
+cscript = -T./STM32F407IGHx_FLASH.ld
+
+rule OBJCOPY
+  command = arm-none-eabi-objcopy -Oihex $in $out && arm-none-eabi-size $in
+  description = Creating $out hexfile
+
+rule CC
+  depfile = $out.d
+  deps = gcc
+  command = $tool -MMD -MF $out.d  -g -Os -Wall -fdata-sections -ffunction-sections $cflags $incdir $deflst -c $in -o $out
+  description = Compiling $in
+
+rule CLINK
+  command = $tool -g $cflags $deflst $cscript -specs=nosys.specs -specs=nano.specs -Wl,--gc-sections $in -o $out
+  description = Linking $out
+
+build $builddir/main.o: CC ../../Src/main.c
+build $builddir/stm32f4xx_it.o: CC ../../Src/stm32f4xx_it.c
+build $builddir/system_stm32f4xx.o: CC ../../Src/system_stm32f4xx.c
+build $builddir/usbd_cdc_interface.o: CC ../../Src/usbd_cdc_interface.c
+build $builddir/usbd_conf.o: CC ../../Src/usbd_conf.c
+build $builddir/usbd_desc.o: CC ../../Src/usbd_desc.c
+build $builddir/startup_stm32f407xx.o: CC ../startup_stm32f407xx.s
+build $builddir/stmpe811.o: CC $stlib/Drivers/BSP/Components/stmpe811/stmpe811.c
+build $builddir/stm324xg_eval.o: CC $stlib/Drivers/BSP/STM324xG_EVAL/stm324xg_eval.c
+build $builddir/stm324xg_eval_io.o: CC $stlib/Drivers/BSP/STM324xG_EVAL/stm324xg_eval_io.c
+build $builddir/stm32f4xx_hal.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c
+build $builddir/stm32f4xx_hal_cortex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c
+build $builddir/stm32f4xx_hal_dma.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c
+build $builddir/stm32f4xx_hal_dma_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c
+build $builddir/stm32f4xx_hal_flash.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c
+build $builddir/stm32f4xx_hal_flash_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c
+build $builddir/stm32f4xx_hal_gpio.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c
+build $builddir/stm32f4xx_hal_hcd.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_hcd.c
+build $builddir/stm32f4xx_hal_i2c.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
+build $builddir/stm32f4xx_hal_i2c_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
+build $builddir/stm32f4xx_hal_pcd.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c
+build $builddir/stm32f4xx_hal_pcd_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c
+build $builddir/stm32f4xx_hal_pwr.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c
+build $builddir/stm32f4xx_hal_pwr_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c
+build $builddir/stm32f4xx_hal_rcc.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c
+build $builddir/stm32f4xx_hal_sram.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_sram.c
+build $builddir/stm32f4xx_hal_tim.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c
+build $builddir/stm32f4xx_hal_tim_ex.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+build $builddir/stm32f4xx_hal_uart.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c
+build $builddir/stm32f4xx_ll_fsmc.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_fsmc.c
+build $builddir/stm32f4xx_ll_usb.o: CC $stlib/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c
+build $builddir/usbd_cdc.o: CC $stlib/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+build $builddir/usbd_core.o: CC $stlib/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+build $builddir/usbd_ctlreq.o: CC $stlib/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+build $builddir/usbd_ioreq.o: CC $stlib/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+
+build $builddir/$project_name.elf: CLINK $builddir/startup_stm32f407xx.o $
+                                         $builddir/main.o $
+                                         $builddir/stm32f4xx_it.o $
+                                         $builddir/system_stm32f4xx.o $
+                                         $builddir/usbd_cdc_interface.o $
+                                         $builddir/usbd_conf.o $
+                                         $builddir/usbd_desc.o $
+                                         $builddir/stmpe811.o $
+                                         $builddir/stm324xg_eval.o $
+                                         $builddir/stm324xg_eval_io.o $
+                                         $builddir/stm32f4xx_hal.o $
+                                         $builddir/stm32f4xx_hal_cortex.o $
+                                         $builddir/stm32f4xx_hal_dma.o $
+                                         $builddir/stm32f4xx_hal_dma_ex.o $
+                                         $builddir/stm32f4xx_hal_flash.o $
+                                         $builddir/stm32f4xx_hal_flash_ex.o $
+                                         $builddir/stm32f4xx_hal_gpio.o $
+                                         $builddir/stm32f4xx_hal_hcd.o $
+                                         $builddir/stm32f4xx_hal_i2c.o $
+                                         $builddir/stm32f4xx_hal_i2c_ex.o $
+                                         $builddir/stm32f4xx_hal_pcd.o $
+                                         $builddir/stm32f4xx_hal_pcd_ex.o $
+                                         $builddir/stm32f4xx_hal_pwr.o $
+                                         $builddir/stm32f4xx_hal_pwr_ex.o $
+                                         $builddir/stm32f4xx_hal_rcc.o $
+                                         $builddir/stm32f4xx_hal_sram.o $
+                                         $builddir/stm32f4xx_hal_tim.o $
+                                         $builddir/stm32f4xx_hal_tim_ex.o $
+                                         $builddir/stm32f4xx_hal_uart.o $
+                                         $builddir/stm32f4xx_ll_fsmc.o $
+                                         $builddir/stm32f4xx_ll_usb.o $
+                                         $builddir/usbd_cdc.o $
+                                         $builddir/usbd_core.o $
+                                         $builddir/usbd_ctlreq.o $
+                                         $builddir/usbd_ioreq.o
+
+build $builddir/$project_name.hex: OBJCOPY $builddir/$project_name.elf
+default $builddir/$project_name.hex
