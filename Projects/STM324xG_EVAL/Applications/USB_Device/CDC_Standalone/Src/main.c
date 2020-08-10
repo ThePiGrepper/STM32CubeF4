@@ -70,6 +70,15 @@ int main(void)
        - Global MSP (MCU Support Package) initialization
      */
   HAL_Init();
+	/*setup PD13 */
+	GPIO_InitTypeDef  GPIO_InitStruct;
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+  GPIO_InitStruct.Pin       = GPIO_PIN_13;
+  GPIO_InitStruct.Mode      = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull      = GPIO_NOPULL;
+  GPIO_InitStruct.Speed     = GPIO_SPEED_FAST;
+//  GPIO_InitStruct.Alternate = USARTx_TX_AF;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
   
   /* Configure the system clock to 168 MHz */
   SystemClock_Config();
@@ -78,10 +87,10 @@ int main(void)
   USBD_Init(&USBD_Device, &VCP_Desc, 0);
   
   /* Add Supported Class */
-  USBD_RegisterClass(&USBD_Device, USBD_CDC_CLASS);
+//  USBD_RegisterClass(&USBD_Device, USBD_CDC_CLASS);
   
   /* Add CDC Interface Class */
-  USBD_CDC_RegisterInterface(&USBD_Device, &USBD_CDC_fops);
+//  USBD_CDC_RegisterInterface(&USBD_Device, &USBD_CDC_fops);
   
   /* Start Device Process */
   USBD_Start(&USBD_Device);

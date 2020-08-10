@@ -315,7 +315,9 @@ void HAL_PCD_ISOINIncompleteCallback(PCD_HandleTypeDef *hpcd, uint8_t epnum)
   */
 void HAL_PCD_ConnectCallback(PCD_HandleTypeDef *hpcd)
 {
-  USBD_LL_DevConnected(hpcd->pData);
+	//here toggle pin PD13(orange).
+	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
+  //USBD_LL_DevConnected(hpcd->pData);
 }
 
 /**
