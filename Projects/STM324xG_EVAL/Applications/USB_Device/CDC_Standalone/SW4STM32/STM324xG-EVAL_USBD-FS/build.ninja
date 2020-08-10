@@ -34,6 +34,7 @@ rule CLINK
 
 build $builddir/main.o: CC ../../Src/main.c
 build $builddir/stm32f4xx_it.o: CC ../../Src/stm32f4xx_it.c
+build $builddir/stm32f4xx_hal_msp.o: CC ../../Src/stm32f4xx_hal_msp.c
 build $builddir/system_stm32f4xx.o: CC ../../Src/system_stm32f4xx.c
 build $builddir/usbd_cdc_interface.o: CC ../../Src/usbd_cdc_interface.c
 build $builddir/usbd_conf.o: CC ../../Src/usbd_conf.c
@@ -71,6 +72,7 @@ build $builddir/usbd_ioreq.o: CC $stlib/Middlewares/ST/STM32_USB_Device_Library/
 build $builddir/$project_name.elf: CLINK $builddir/startup_stm32f407xx.o $
                                          $builddir/main.o $
                                          $builddir/stm32f4xx_it.o $
+                                         $builddir/stm32f4xx_hal_msp.o $
                                          $builddir/system_stm32f4xx.o $
                                          $builddir/usbd_cdc_interface.o $
                                          $builddir/usbd_conf.o $
